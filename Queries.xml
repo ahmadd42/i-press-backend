@@ -1,0 +1,120 @@
+<Queries>
+    <QueryName>
+        Add content
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO documents (content_id, user_id, extension, uploaded_on) VALUES (?,?,?,?)
+    </QuerySQL>
+
+    <QueryName>
+        Add content metadata
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO docmetadata (content_id, title, descr, downloadable, author, category) 
+        VALUES (?,?,?,?,?,?)
+    </QuerySQL>
+
+    <QueryName>
+        Update shared on
+    </QueryName>
+    <QuerySQL>
+        UPDATE documents SET shared_on = ? WHERE content_id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Get basic info
+    </QueryName>
+    <QuerySQL>
+        SELECT users.disp_name AS 'uploader', documents.extension AS 'ext', docmetadata.downloadable 
+        AS 'can_download', docmetadata.title AS 'title' 
+        FROM documents, docmetadata, users 
+        WHERE documents.content_id = ? AND documents.content_id = docmetadata.content_id 
+        AND documents.user_id = users.email        
+    </QuerySQL>
+
+    <QueryName>
+        Get feeds
+    </QueryName>
+    <QuerySQL>
+        SELECT documents.content_id AS 'ContentID', documents.user_id AS 'UserID', documents.shared_on 
+        AS 'SharedOn', documents.extension AS 'Extension', docmetadata.title AS 'DocumentTitle',
+        docmetadata.descr AS 'Description', docmetadata.author AS 'Author' 
+        FROM documents, docmetadata
+        WHERE documents.content_id = docmetadata.content_id AND documents.shared_on IS NOT NULL
+    </QuerySQL>
+
+    <QueryName>
+        Sign in
+    </QueryName>
+    <QuerySQL>
+        SELECT * FROM users WHERE email = ?
+    </QuerySQL>
+
+    <QueryName>
+        Get comments
+    </QueryName>
+    <QuerySQL>
+        SELECT comments.comment_id AS 'CommentID', comments.comment AS 'Comment', users.disp_name
+        AS 'DisplayName' 
+        FROM comments, users 
+        WHERE comments.content_id = ? AND comments.user_id = users.email 
+        ORDER BY comments.posted_on ASC
+    </QuerySQL>
+
+    <QueryName>
+        Get comment count
+    </QueryName>
+    <QuerySQL>
+        SELECT COUNT(*) AS 'comments' FROM comments WHERE content_id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Post comment
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO comments (comment_id, user_id, content_id, comment, posted_on) VALUES (?,?,?,?,?)
+    </QuerySQL>
+
+    <QueryName>
+        Get likes
+    </QueryName>
+    <QuerySQL>
+        SELECT COUNT(*) AS 'likes' FROM reactions WHERE content_id = ? AND reaction = 'like'
+    </QuerySQL>
+
+    <QueryName>
+        Get dislikes
+    </QueryName>
+    <QuerySQL>
+        SELECT COUNT(*) AS 'dislikes' FROM reactions WHERE content_id = ? AND reaction = 'dislike'
+    </QuerySQL>
+
+    <QueryName>
+        Get user reaction
+    </QueryName>
+    <QuerySQL>
+        SELECT reaction FROM reactions WHERE content_id = ? and user_id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Add reaction
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO reactions (user_id, content_id, reaction) VALUES (?,?,?)
+    </QuerySQL>
+
+    <QueryName>
+        Delete reaction
+    </QueryName>
+    <QuerySQL>
+        DELETE FROM reactions WHERE user_id = ? AND content_id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Add user
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd) VALUES (?,?,?,?,?,?)
+    </QuerySQL>
+
+</Queries>
