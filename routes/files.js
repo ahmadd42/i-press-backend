@@ -16,6 +16,7 @@ const jwt = require("jsonwebtoken");
 const { PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
 
 
+
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // memory storage
 const bucket = process.env.R2_BUCKET;
@@ -66,10 +67,10 @@ to the changed name. The changed name will also be used as Document ID in the da
     console.log("Renamed:", newPath);
 
   try {
-    if(ext === ".pdf") {
+/*    if(ext === ".pdf") {
       const jpgPath = await sv.generatePdfPreview(newPath, newJpgPath);
       await sv.uploadFile(jpgPath);
-    }
+    }*/
 
     // Send original file to Cloudflare storage
     await sv.uploadFile(newPath);
@@ -444,8 +445,9 @@ router.post("/adddeletereaction", async(req, res) => {
   });
   });
 
-router.post("/generatepreview", async(req, res) => {
-await sv.extractVideoFrame(req.body.inputVideo, req.body.outputImage, 5);
+router.get("/generatepreview", async(req, res) => {
+  const img_path = await sv.generatepdfpreview2();
+  res.json(img_path);
 });
 
 router.post("/adduser", async(req, res) => {

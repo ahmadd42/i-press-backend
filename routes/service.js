@@ -3,10 +3,10 @@ const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fs = require('fs');
 const path = require('path');
-const pdf = require('pdf-poppler');
-const ffmp = require('fluent-ffmpeg');
+//const pdf = require('pdf-poppler');
+//const ffmp = require('fluent-ffmpeg');
 const xml2js = require('xml2js');
-
+const { fromPath } = require("pdf2pic");
 
 const bucket = process.env.R2_BUCKET;
 
@@ -74,13 +74,13 @@ function getCurrentDateTime() {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-/**
+/*
  * Converts the first page of a PDF to JPG without "-1"/"-01" suffix.
  * @param {string} pdfPath      Path to the PDF file
  * @param {string} outputPath   Desired output JPG file path
  * @returns {Promise<string>}   Final JPG file path
  */
-async function generatePdfPreview(pdfPath, outputPath) {
+/*async function generatePdfPreview(pdfPath, outputPath) {
   try {
     const outDir = path.dirname(outputPath);
     const desiredBase = path.basename(outputPath, path.extname(outputPath)); // e.g. "preview"
@@ -129,16 +129,16 @@ async function generatePdfPreview(pdfPath, outputPath) {
     console.error("PDF to JPG conversion failed:", error);
     throw error;
   }
-}
+}*/
 
-/**
+/*
  * Extracts a frame from a video at a given timestamp.
  * @param {string} inputPath - Path to the video file.
  * @param {string} outputPath - Path to save the extracted image.
  * @param {number|string} timestamp - Time in seconds or timestamp string (e.g. '00:00:05').
  * @returns {Promise<void>}
  */
-function extractVideoFrame(inputPath, outputPath, timestamp = 5) {
+/*function extractVideoFrame(inputPath, outputPath, timestamp = 5) {
   return new Promise((resolve, reject) => {
     ffmp(inputPath)
       .on('end', () => {
@@ -156,7 +156,7 @@ function extractVideoFrame(inputPath, outputPath, timestamp = 5) {
         size: '1280x?' // optional
       });
   });
-}
+}*/
 
 async function readSQL(path) {
       var sql = "";
@@ -186,12 +186,31 @@ async function loadQueries(filePath) {
   return queryMap;
 }
 
+async function generatepdfpreview2() {
+    try {
+      const convert = fromPath("uploads/Zac-the-rat.pdf", {
+        density: 150,
+        saveFilename: "Zac-the-rat",
+        savePath: "uploads/",
+        format: "jpg"
+      });
+  
+      const result = await convert(1);
+      return result.path;
+  
+    } catch (err) {
+      console.error(err);
+    }
+  
+}
+
 module.exports = {
   uploadFile,
   getFileUrl,
   getColumnAliases,
   getCurrentDateTime,
-  generatePdfPreview,
+  //generatePdfPreview,
+  generatepdfpreview2,
   extractVideoFrame,
   readSQL,
   loadQueries
