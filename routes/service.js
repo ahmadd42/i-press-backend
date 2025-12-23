@@ -211,7 +211,7 @@ module.exports = {
   getCurrentDateTime,
   //generatePdfPreview,
   generatepdfpreview2,
-  extractVideoFrame,
+  //extractVideoFrame,
   readSQL,
   loadQueries
 };
