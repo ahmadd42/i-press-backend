@@ -170,7 +170,7 @@ router.post("/getbasicinfo", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-    if (!referer.startsWith("http://localhost") && !referer.startsWith("http://192.168.100.99")) {
+    if (!referer.startsWith("https://hidden-mode-afa9.ahmad-rasheed5929.workers.dev/")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
     }
 
@@ -194,7 +194,7 @@ router.post("/getfeeds", async(req, res) => {
 const referer = req.get("referer") || "";
 
 // ✅ Allow only requests from http://localhost/i-press
-if (!referer.startsWith("http://192.168.100.99") && !referer.startsWith("http://localhost")) {
+if (!referer.startsWith("https://hidden-mode-afa9.ahmad-rasheed5929.workers.dev/")) {
         return res.status(403).send("Oops! The requested resource could not be fetched");
 }
 
@@ -304,7 +304,7 @@ router.post("/getcomments", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-    if (!referer.startsWith("http://localhost") && !referer.startsWith("http://192.168.100.99")) {
+    if (!referer.startsWith("https://hidden-mode-afa9.ahmad-rasheed5929.workers.dev/")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
     }
 
