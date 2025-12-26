@@ -58,7 +58,7 @@ to the changed name. The changed name will also be used as Document ID in the da
   const ext = path.extname(req.file.originalname);
   const oldPath = path.join('uploads/', `${base}`);
   const newPath = path.join('uploads/', `${base}${ext}`);
-  const newJpgPath = path.join('uploads/', `${base}.jpg`);
+  //const newJpgPath = path.join('uploads/', `${base}.jpg`);
   const dt = sv.getCurrentDateTime();
 
   // Rename the file
@@ -67,10 +67,10 @@ to the changed name. The changed name will also be used as Document ID in the da
     console.log("Renamed:", newPath);
 
   try {
-/*    if(ext === ".pdf") {
-      const jpgPath = await sv.generatePdfPreview(newPath, newJpgPath);
+    if(ext === ".pdf") {
+      const jpgPath = await sv.generatePdfPreview(newPath, "uploads/", base);
       await sv.uploadFile(jpgPath);
-    }*/
+    }
 
     // Send original file to Cloudflare storage
     await sv.uploadFile(newPath);
@@ -104,14 +104,14 @@ router.get("/download/:filename", async (req, res) => { // Download (signed URL)
   }
 });
 
-router.get("/getContent/:key", async (req, res) => {
+router.get("/getContent/:key/:screensize", async (req, res) => {
 
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-  //  if (!referer.startsWith("http://localhost") && !referer.startsWith("http://192.168.100.99")) {
-  //    return res.status(403).send("Oops! The requested resource could not be fetched");
-  //  }
+    if (!referer.startsWith("https://proud-mud-0969.ahmad-rasheed5929.workers.dev/") && req.params.screensize === "big") {
+      return res.status(403).send("Oops! The requested resource could not be fetched");
+    }
 
   try {
     const key = req.params.key;
@@ -445,10 +445,10 @@ router.post("/adddeletereaction", async(req, res) => {
   });
   });
 
-router.get("/generatepreview", async(req, res) => {
-  const img_path = await sv.generatepdfpreview2();
+/*router.get("/generatepreview", async(req, res) => {
+  const img_path = await sv.generatepdfpreview2("uploads/Zac-the-rat.pdf","uploads/","Zac-the-rat");
   res.json(img_path);
-});
+});*/
 
 router.post("/adduser", async(req, res) => {
   const usr_email = req.body.email;

@@ -186,17 +186,20 @@ async function loadQueries(filePath) {
   return queryMap;
 }
 
-async function generatepdfpreview2() {
+async function generatePdfPreview(pdfpath, outputdir, outputfile) {
     try {
-      const convert = fromPath("uploads/Zac-the-rat.pdf", {
+      const convert = fromPath(pdfpath, {
         density: 150,
-        saveFilename: "Zac-the-rat",
-        savePath: "uploads/",
+        saveFilename: outputfile,
+        savePath: outputdir,
         format: "jpg"
       });
   
       const result = await convert(1);
-      return result.path;
+      const finalPath = path.join(outputdir, `${outputfile}.jpg`);
+      fs.renameSync(result.path, finalPath);
+
+      return finalPath;
   
     } catch (err) {
       console.error(err);
@@ -209,8 +212,7 @@ module.exports = {
   getFileUrl,
   getColumnAliases,
   getCurrentDateTime,
-  //generatePdfPreview,
-  generatepdfpreview2,
+  generatePdfPreview,
   //extractVideoFrame,
   readSQL,
   loadQueries
