@@ -7,6 +7,7 @@ const path = require('path');
 //const ffmp = require('fluent-ffmpeg');
 const xml2js = require('xml2js');
 const { fromPath } = require("pdf2pic");
+const { exec } = require("child_process");
 
 const bucket = process.env.R2_BUCKET;
 
