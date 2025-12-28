@@ -15,13 +15,13 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const { PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
 
-
-
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // memory storage
 const bucket = process.env.R2_BUCKET;
 const saltRounds = 10;
 const SECRET = "super-secret-key";
+
+import { exec } from "child_process";
 
 var queries = "";
 
@@ -472,6 +472,12 @@ router.post("/adduser", async(req, res) => {
   });
 
   });
+  });
+
+  router.get("/verifyimagemagick", (req, res) => {
+    exec("magick -version", (err, stdout) => {
+    console.log(stdout);
+});
   });
 
 module.exports = router;
