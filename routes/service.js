@@ -215,11 +215,11 @@ return new Promise((resolve, reject) => {
 const cmd = `
       convert
       -density 150
-      ${pdf}
+      "${pdfpath}[0]"
       -trim -fuzz 5%
       -gravity center
       +repage
-      ${output}
+      "${output}"
     `.replace(/\s+/g, " ").trim();
 
     exec(cmd, (err) => {
