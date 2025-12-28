@@ -16,5 +16,6 @@
   },
   "scripts": {
     "start": "node app.js"
-  }
+  },
+  "type": "commonjs"
 }
