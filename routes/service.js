@@ -186,7 +186,7 @@ async function loadQueries(filePath) {
   return queryMap;
 }
 
-async function generatePdfPreview(pdfpath, outputdir, outputfile) {
+/*async function generatePdfPreview(pdfpath, outputdir, outputfile) {
     try {
       const convert = fromPath(pdfpath, {
         density: 150,
@@ -205,7 +205,21 @@ async function generatePdfPreview(pdfpath, outputdir, outputfile) {
       console.error(err);
     }
   
+}*/
+
+async function generatePdfPreview(pdfpath, outputdir, outputfile) {
+return new Promise((resolve, reject) => {
+    const output = path.join(outputdir, `${outputfile}.jpg`);
+
+    const cmd = `gm convert -density 150 "${pdfpath}[0]" "${output}"`;
+
+    exec(cmd, (err) => {
+      if (err) return reject(err);
+      resolve(output);
+    });
+  });  
 }
+
 
 module.exports = {
   uploadFile,

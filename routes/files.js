@@ -69,8 +69,8 @@ to the changed name. The changed name will also be used as Document ID in the da
   try {
     if(ext === ".pdf") {
       let outdir = path.join('uploads/');
-      const jpgPath = await sv.generatePdfPreview(newPath, outdir, base);
-      await sv.uploadFile(jpgPath);
+      await sv.generatePdfPreview(newPath, outdir, base);
+      await sv.uploadFile(path.join(outdir, `${base}.jpg`));
     }
 
     // Send original file to Cloudflare storage
