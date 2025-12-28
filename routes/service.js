@@ -213,7 +213,7 @@ return new Promise((resolve, reject) => {
     const output = path.join(outputdir, `${outputfile}.jpg`);
 
 const cmd = `
-      convert
+      gm convert
       -density 150
       "${pdfpath}[0]"
       -trim -fuzz 5%
