@@ -109,7 +109,7 @@ router.get("/getContent/:key/:screensize", async (req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-    if (!referer.startsWith("https://proud-mud-0969.ahmad-rasheed5929.workers.dev/") && req.params.screensize === "big") {
+    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/") && req.params.screensize === "big") {
       return res.status(403).send("Oops! The requested resource could not be fetched");
     }
 
@@ -170,7 +170,7 @@ router.post("/getbasicinfo", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-    if (!referer.startsWith("https://proud-mud-0969.ahmad-rasheed5929.workers.dev/")) {
+    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
     }
 
@@ -194,7 +194,7 @@ router.post("/getfeeds", async(req, res) => {
 const referer = req.get("referer") || "";
 
 // ✅ Allow only requests from http://localhost/i-press
-if (!referer.startsWith("https://proud-mud-0969.ahmad-rasheed5929.workers.dev/")) {
+if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
         return res.status(403).send("Oops! The requested resource could not be fetched");
 }
 
@@ -304,7 +304,7 @@ router.post("/getcomments", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-    if (!referer.startsWith("https://proud-mud-0969.ahmad-rasheed5929.workers.dev/")) {
+    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
     }
 
