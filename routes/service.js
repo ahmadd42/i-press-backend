@@ -212,7 +212,15 @@ async function generatePdfPreview(pdfpath, outputdir, outputfile) {
 return new Promise((resolve, reject) => {
     const output = path.join(outputdir, `${outputfile}.jpg`);
 
-    const cmd = `gm convert -density 150 "${pdfpath}[0]" "${output}"`;
+const cmd = `
+      convert
+      -density 150
+      ${pdf}
+      -trim -fuzz 5%
+      -gravity center
+      +repage
+      ${output}
+    `.replace(/\s+/g, " ").trim();
 
     exec(cmd, (err) => {
       if (err) return reject(err);
