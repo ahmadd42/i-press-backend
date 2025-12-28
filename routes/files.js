@@ -475,7 +475,7 @@ router.post("/adduser", async(req, res) => {
   });
 
   router.get("/verifyimagemagick", (req, res) => {
-    exec("magick -version", (error, stdout, stderr) => {
+    exec("convert -version", (error, stdout, stderr) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }
