@@ -68,7 +68,7 @@ to the changed name. The changed name will also be used as Document ID in the da
 
   try {
     if(ext === ".pdf") {
-      const jpgPath = await sv.generatePdfPreview(newPath, "uploads/", base);
+      const jpgPath = await sv.generatePdfPreview(newPath, "/uploads", base);
       await sv.uploadFile(jpgPath);
     }
 
@@ -445,10 +445,10 @@ router.post("/adddeletereaction", async(req, res) => {
   });
   });
 
-/*router.get("/generatepreview", async(req, res) => {
-  const img_path = await sv.generatepdfpreview2("uploads/Zac-the-rat.pdf","uploads/","Zac-the-rat");
+router.get("/testpreview", async(req, res) => {
+  const img_path = await sv.generatePdfPreview("uploads/Zac-the-rat.pdf","uploads/","Zac-the-rat");
   res.json(img_path);
-});*/
+});
 
 router.post("/adduser", async(req, res) => {
   const usr_email = req.body.email;
