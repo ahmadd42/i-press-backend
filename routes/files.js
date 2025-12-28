@@ -475,9 +475,12 @@ router.post("/adduser", async(req, res) => {
   });
 
   router.get("/verifyimagemagick", (req, res) => {
-    exec("magick -version", (err, stdout) => {
-    console.log(stdout);
-});
+    exec("magick -version", (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json({ output: stdout });
   });
+});
 
 module.exports = router;
