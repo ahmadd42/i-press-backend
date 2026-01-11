@@ -110,9 +110,9 @@ router.get("/getContent/:key/:screensize", async (req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-/*    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/") && req.params.screensize === "big") {
+    if (!referer.startsWith("https://gopress.it.com") && req.params.screensize === "big") {
       return res.status(403).send("Oops! The requested resource could not be fetched");
-    }*/
+    }
 
   try {
     const key = req.params.key;
@@ -171,9 +171,9 @@ router.post("/getbasicinfo", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-/*    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
+    if (!referer.startsWith("https://gopress.it.com")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
-    }*/
+    }
 
 console.log(conID);
 
@@ -195,9 +195,9 @@ router.post("/getfeeds", async(req, res) => {
 const referer = req.get("referer") || "";
 
 // ✅ Allow only requests from http://localhost/i-press
-/*if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
+if (!referer.startsWith("https://gopress.it.com")) {
         return res.status(403).send("Oops! The requested resource could not be fetched");
-}*/
+}
 
 var sql = queries['Get feeds'].replace(/\s+/g, ' ').trim();
 
@@ -305,9 +305,9 @@ router.post("/getcomments", async(req, res) => {
   const referer = req.get("referer") || "";
 
     // ✅ Allow only requests from http://localhost/i-press
-/*    if (!referer.startsWith("https://proud-bread-0534.ahmad-rasheed5929.workers.dev/")) {
+    if (!referer.startsWith("https://gopress.it.com")) {
     return res.status(403).send("Oops! The requested resource could not be fetched");
-    }*/
+    }
 
 console.log(conID);
 
