@@ -11,8 +11,7 @@ app.use("/files", fileRoutes);
 app.use(cors({
   origin: 'https://gopress.it.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type'],
 })); //Allow requests only from gopress front-end app
 
 const PORT = process.env.PORT || 3000;
