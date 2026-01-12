@@ -35,8 +35,8 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // Manual CORS headers middleware
-/*router.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', "*");
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', "https://gopress.it.com");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
@@ -46,7 +46,7 @@ router.use(bodyParser.json());
   }
 
   next();
-});*/
+});
 
 router.post("/upload", upload.single("file"), async (req, res) => { // Upload endpoint
 
