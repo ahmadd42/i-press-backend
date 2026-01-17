@@ -20,7 +20,7 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // memory storage
 const bucket = process.env.R2_BUCKET;
 const saltRounds = 10;
-const SECRET = "super-secret-key";
+const SECRET = "f@isal-ab@d-((041))";
 
 
 var queries = "";
@@ -48,13 +48,15 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post("/upload", upload.single("file"), async (req, res) => { // Upload endpoint
+/**** Included verifyAuth from service.js module ****/
+
+router.post("/upload", upload.single("file"), sv.verifyAuth, async (req, res) => { // Upload endpoint
 
 /* Prepare new path variables to rename the uploaded file, since multer changes the name of the 
 uploaded file as well as removes its extension. The new file name is formed by adding original extension 
 to the changed name. The changed name will also be used as Document ID in the database. */
   const base = req.file.filename;
-  const user = req.body.userId;
+  const userEmail = req.user.email; /***** extracted userEmail from verified loginToken instead of request  ******/
   const ext = path.extname(req.file.originalname);
   const oldPath = path.join('uploads/', `${base}`);
   const newPath = path.join('uploads/', `${base}${ext}`);
@@ -82,7 +84,7 @@ to the changed name. The changed name will also be used as Document ID in the da
     console.log("Connected!");
     var sql = queries['Add content'].replace(/\s+/g, ' ').trim();
         
-    con.query(sql, [base, user, ext, dt], function (err, result) {
+    con.query(sql, [base, userEmail, ext, dt], function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
   });
@@ -213,7 +215,7 @@ var sql = queries['Get feeds'].replace(/\s+/g, ' ').trim();
 });
 
 
-router.post("/recordmetadata", async(req, res) => {
+router.post("/recordmetadata", sv.verifyAuth, async(req, res) => {
   const dt = await sv.getCurrentDateTime();
   const params = [req.body.contentid, req.body.title, req.body.des, req.body.downloadable, req.body.author, req.body.cat, dt, req.body.contentid];
 
@@ -276,9 +278,18 @@ router.post("/login", async(req, res) => {
     }
 
   /*if (username === "test" && password === "123") {*/
-    const loginToken = jwt.sign({ email }, SECRET, );
+    const loginToken = jwt.sign(
+    {
+        sub: user.email,        // or user.email if you don’t have numeric ID
+        email: user.email
+    },
+    SECRET,
+    {
+        issuer: "gopress"
+    }
+  );
     console.log("successfully logged in");
-    res.json({loginToken, displayName: user.disp_name, userId: user.email});
+    res.json({loginToken, displayName: user.disp_name}); /**** Removed userdId from response *****/
 
     //if (err) throw err;
     console.log("Success");
@@ -326,12 +337,12 @@ var sql = queries['Get comments'].replace(/\s+/g, ' ').trim();
 });
 });
 
-router.post("/postcomment", async(req, res) => {
+router.post("/postcomment", sv.verifyAuth, async(req, res) => {
   const conID = req.body.contid;
   const dt = sv.getCurrentDateTime();
   const leading = req.body.contid.substring(0, 3);
   const trailing = req.body.contid.substring(29);
-  const userid = req.body.userid;
+  const userid = req.user.email;
   const contid = req.body.contid;
   const comment = req.body.comment;
 
@@ -395,9 +406,9 @@ router.post("/getdislikes", async(req, res) => {
 
 });
 
-router.post("/getuserreaction", async(req, res) => {
+router.post("/getuserreaction", sv.verifyAuth, async(req, res) => {
     const conID = req.body.contentid;
-    const usrID = req.body.userid;
+    const usrID = req.user.email;
     var sql = queries['Get user reaction'].replace(/\s+/g, ' ').trim();
 
      console.log(sql);
@@ -414,9 +425,9 @@ router.post("/getuserreaction", async(req, res) => {
 
 });
 
-router.post("/adddeletereaction", async(req, res) => {
+router.post("/adddeletereaction", sv.verifyAuth, async(req, res) => {
 
-  const usrid = req.body.userid;
+  const usrid = req.user.email;
   const ctid = req.body.contentid;
   const usr_rct = req.body.reaction;
   const operation = req.body.operation; 

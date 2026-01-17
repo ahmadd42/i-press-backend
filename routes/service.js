@@ -3,11 +3,10 @@ const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fs = require('fs');
 const path = require('path');
-//const pdf = require('pdf-poppler');
-//const ffmp = require('fluent-ffmpeg');
 const xml2js = require('xml2js');
 const { fromPath } = require("pdf2pic");
 const { exec } = require("child_process");
+const jwt = require("jsonwebtoken");
 
 const bucket = process.env.R2_BUCKET;
 
@@ -75,90 +74,6 @@ function getCurrentDateTime() {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-/*
- * Converts the first page of a PDF to JPG without "-1"/"-01" suffix.
- * @param {string} pdfPath      Path to the PDF file
- * @param {string} outputPath   Desired output JPG file path
- * @returns {Promise<string>}   Final JPG file path
- */
-/*async function generatePdfPreview(pdfPath, outputPath) {
-  try {
-    const outDir = path.dirname(outputPath);
-    const desiredBase = path.basename(outputPath, path.extname(outputPath)); // e.g. "preview"
-    const desiredExt = (path.extname(outputPath).replace(".", "") || "jpg").toLowerCase();
-
-    // Ensure output directory exists
-    await fs.promises.mkdir(outDir, { recursive: true });
-
-    // Step 1: Convert PDF to JPG (Poppler will add "-1" or "-01")
-    await pdf.convert(pdfPath, {
-      format: "jpeg",
-      out_dir: outDir,
-      out_prefix: desiredBase,
-      page: 1,
-    });
-
-    // Step 2: Find the generated file
-    const files = await fs.promises.readdir(outDir);
-    const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const rx = new RegExp(`^${escapeRegex(desiredBase)}-\\d+\\.jpe?g$`, "i");
-    const generatedFile = files.find(f => rx.test(f));
-
-    if (!generatedFile) {
-      throw new Error(`Output file not found for prefix "${desiredBase}" in ${outDir}`);
-    }
-
-    const from = path.join(outDir, generatedFile);
-    const to = path.join(outDir, `${desiredBase}.${desiredExt}`);
-
-    // Step 3: Rename to final desired filename
-    if (from !== to) {
-      try {
-        await fs.promises.rename(from, to);
-      } catch (err) {
-        if (err.code === "EEXIST") {
-          await fs.promises.unlink(to); // remove existing file if any
-          await fs.promises.rename(from, to);
-        } else {
-          throw err;
-        }
-      }
-    }
-
-    return to; // Return the final output path
-  } catch (error) {
-    console.error("PDF to JPG conversion failed:", error);
-    throw error;
-  }
-}*/
-
-/*
- * Extracts a frame from a video at a given timestamp.
- * @param {string} inputPath - Path to the video file.
- * @param {string} outputPath - Path to save the extracted image.
- * @param {number|string} timestamp - Time in seconds or timestamp string (e.g. '00:00:05').
- * @returns {Promise<void>}
- */
-/*function extractVideoFrame(inputPath, outputPath, timestamp = 5) {
-  return new Promise((resolve, reject) => {
-    ffmp(inputPath)
-      .on('end', () => {
-        console.log('✅ Frame extracted successfully!');
-        resolve();
-      })
-      .on('error', (err) => {
-        console.error('❌ Error:', err);
-        reject(err);
-      })
-      .screenshots({
-        timestamps: [timestamp],
-        filename: path.basename(outputPath),
-        folder: path.dirname(outputPath),
-        size: '1280x?' // optional
-      });
-  });
-}*/
-
 async function readSQL(path) {
       var sql = "";
       try {
@@ -187,27 +102,6 @@ async function loadQueries(filePath) {
   return queryMap;
 }
 
-/*async function generatePdfPreview(pdfpath, outputdir, outputfile) {
-    try {
-      const convert = fromPath(pdfpath, {
-        density: 150,
-        saveFilename: outputfile,
-        savePath: outputdir,
-        format: "jpg"
-      });
-  
-      const result = await convert(1);
-      const finalPath = path.join(outputdir, `${outputfile}.jpg`);
-      fs.renameSync(result.path, finalPath);
-
-      return finalPath;
-  
-    } catch (err) {
-      console.error(err);
-    }
-  
-}*/
-
 async function generatePdfPreview(pdfpath, outputdir, outputfile) {
 return new Promise((resolve, reject) => {
     const output = path.join(outputdir, `${outputfile}.jpg`);
@@ -229,6 +123,25 @@ const cmd = `
   });  
 }
 
+function verifyAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Missing token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload; // attach user info
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid or expired token" });
+  }
+}
+
+
 
 module.exports = {
   uploadFile,
@@ -236,7 +149,7 @@ module.exports = {
   getColumnAliases,
   getCurrentDateTime,
   generatePdfPreview,
-  //extractVideoFrame,
   readSQL,
-  loadQueries
+  loadQueries,
+  verifyAuth
 };
