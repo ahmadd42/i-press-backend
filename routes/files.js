@@ -20,8 +20,6 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // memory storage
 const bucket = process.env.R2_BUCKET;
 const saltRounds = 10;
-const SECRET = "f@isal-ab@d-((041))";
-
 
 var queries = "";
 
@@ -283,7 +281,7 @@ router.post("/login", async(req, res) => {
         sub: user.email,        // or user.email if you don’t have numeric ID
         email: user.email
     },
-    SECRET,
+    process.env.JWT_SECRET,
     {
         issuer: "gopress"
     }
@@ -303,7 +301,7 @@ router.get("/me", (req, res) => {
   if (!token) return res.status(401).json({ error: "No token" });
 
   try {
-    const payload = jwt.verify(token, SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
     res.json({ username: payload.username });
   } catch {
     res.status(403).json({ error: "Invalid token" });
