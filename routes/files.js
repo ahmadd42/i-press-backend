@@ -466,6 +466,16 @@ router.post("/adduser", async(req, res) => {
   const fname = req.body.f_name;
   const lname = req.body.l_name;
   const dispname = req.body.disp_name;
+  const captchaToken = req.body.c_token;
+
+  const captcha = await verifyTurnstile(
+    captchaToken,
+    req.ip
+  );
+
+  if (!captcha.success) {
+    return res.status(400).json({ error: "Captcha failed" });
+  }
 
   const hash = await bcrypt.hash(req.body.pwd, saltRounds);
 
