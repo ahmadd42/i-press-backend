@@ -468,7 +468,7 @@ router.post("/adduser", async(req, res) => {
   const dispname = req.body.disp_name;
   const captchaToken = req.body.c_token;
 
-  const captcha = await verifyTurnstile(
+  const captcha = await sv.verifyTurnstile(
     captchaToken,
     req.ip
   );
