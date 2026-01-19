@@ -488,20 +488,33 @@ router.post("/adduser", async(req, res) => {
   }
 
   const hash = await bcrypt.hash(req.body.pwd, saltRounds);
+  const code = sv.generateVerificationCode();
+  const codeHash = sv.hashCode(code);
+
 
   con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
-  
-  var sql = queries['Add user'].replace(/\s+/g, ' ').trim();
 
-    con.query(sql, [usr_email, usr_country, fname, lname, dispname, hash], function (err, result) {
+  var sql = queries['Find user'];
+
+  con.query(sql, [usr_email], function (err, result) {
+  if (err) throw err;
+  if (result.length > 0) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+  });
+  
+  var sql2 = queries['Add user'].replace(/\s+/g, ' ').trim();
+
+    con.query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive', codeHash], function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-    res.json("User added successfully");
+  });
   });
 
-  });
+  await sv.sendEmail(fname, usr_email, code);
+  res.json("User added successfully");
   });
 
   router.get("/verifyimagemagick", (req, res) => {
@@ -512,5 +525,20 @@ router.post("/adduser", async(req, res) => {
     res.json({ output: stdout });
   });
 });
+
+  router.get("/testemail", async(req, res) => {
+await mailer.sendMail({
+      from: "goPress<noreply.gopress@gmail.com>",
+      to: "ahmad.rasheed5929@outlook.com",
+      subject: "Verify your email",
+      html: `
+        <p>Congratulations <b>Ahmad !</b></p>
+        <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+        <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+        <p>12345678</p>
+      `
+    });
+    res.json("Email sent successfully");
+  });
 
 module.exports = router;

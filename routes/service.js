@@ -8,6 +8,8 @@ const { fromPath } = require("pdf2pic");
 const { exec } = require("child_process");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
+const crypto = require("crypto");
+const mailer = require("../emailer/mailer")
 
 const bucket = process.env.R2_BUCKET;
 
@@ -159,6 +161,29 @@ async function verifyTurnstile(token, ip) {
   return response.json();
 }
 
+function generateVerificationCode() {
+  return Math.floor(10000000 + Math.random() * 90000000).toString();
+}
+
+function hashCode(code) {
+  return crypto.createHash("sha256").update(code).digest("hex");
+}
+
+async function sendEmail(f_name, email, code) {
+  await mailer.sendMail({
+      from: "goPress<noreply.gopress@gmail.com>",
+      to: email,
+      subject: "Verify your email",
+      html: `
+        <p>Congratulations <b>${f_name} !</b></p>
+        <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+        <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+        <p>${code}</p>
+      `
+    });
+
+}
+
 module.exports = {
   uploadFile,
   getFileUrl,
@@ -168,5 +193,8 @@ module.exports = {
   readSQL,
   loadQueries,
   verifyAuth,
-  verifyTurnstile
+  verifyTurnstile,
+  generateVerificationCode,
+  hashCode,
+  sendEmail
 };

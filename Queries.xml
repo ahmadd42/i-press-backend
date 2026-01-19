@@ -114,7 +114,15 @@
         Add user
     </QueryName>
     <QuerySQL>
-        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd) VALUES (?,?,?,?,?,?)
+        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd, user_status, v_code) VALUES (?,?,?,?,?,?,?,?)
     </QuerySQL>
+
+    <QueryName>
+        Find user
+    </QueryName>
+    <QuerySQL>
+        SELECT * FROM users WHERE email = ?
+    </QuerySQL>
+
 
 </Queries>
