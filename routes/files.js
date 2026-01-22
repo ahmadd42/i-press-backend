@@ -231,7 +231,7 @@ router.post("/recordmetadata", sv.verifyAuth, async(req, res) => {
   });
 });
 
-  res.json({ Message: "Document information updated successfully" });
+  res.status(200).json({ Message: "Document information updated successfully" });
 });
 
 router.post('/originname', async(req, res) => {
@@ -283,6 +283,10 @@ router.post("/login", async(req, res) => {
 
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if(user.user_status === "inactive") {
+      return res.status(401).json({ error: "Email not verified" });
     }
 
   /*if (username === "test" && password === "123") {*/
@@ -370,7 +374,7 @@ router.post("/postcomment", sv.verifyAuth, async(req, res) => {
     con.query(sql2, [comid, userid, contid, comment, dt], function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-    res.json("Comment added successfully");
+    res.status(200).json({message: "Comment added successfully"});
   });
 
 
@@ -449,7 +453,7 @@ router.post("/adddeletereaction", sv.verifyAuth, async(req, res) => {
     con.query(sql, [usrid, ctid, usr_rct], function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-    res.json("Reaction added/deleted successfully");
+    res.status(200).json({message: "Reaction added/deleted successfully"});
   });
 
   }
@@ -458,7 +462,7 @@ router.post("/adddeletereaction", sv.verifyAuth, async(req, res) => {
     con.query(sql, [usrid, ctid], function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-    res.json("Reaction added/deleted successfully");
+    res.status(200).json({message: "Reaction added/deleted successfully"});
   });
 
   }            
@@ -491,30 +495,19 @@ router.post("/adduser", async(req, res) => {
   const code = sv.generateVerificationCode();
   const codeHash = sv.hashCode(code);
 
-
-  con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-
+  await con.promise().connect(); 
   var sql = queries['Find user'];
+  const [rows] = await con.promise().query(sql, [usr_email]);
 
-  con.query(sql, [usr_email], function (err, result) {
-  if (err) throw err;
-  if (result.length > 0) {
+  if (rows.length > 0) {
       return res.status(409).json({ error: "Email already registered" });
-    }
-  });
-  
+  }
+  else {
   var sql2 = queries['Add user'].replace(/\s+/g, ' ').trim();
-
-    con.query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive', codeHash], function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
-  });
-  });
-
+  await con.promise().query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive', codeHash]);
   await sv.sendEmail(fname, usr_email, code);
-  res.json("User added successfully");
+  res.status(200).json({message: "User added successfully"});
+  }
   });
 
   router.get("/verifyimagemagick", (req, res) => {
@@ -524,6 +517,42 @@ router.post("/adduser", async(req, res) => {
     }
     res.json({ output: stdout });
   });
+});
+
+router.post("/verifyemail", async(req, res) => {
+const usr_email = req.body.email;
+const code = req.body.vcode;
+var sql = queries['Verify user'];
+
+await con.promise().connect();
+const [rows] = await con.promise().query(sql, [usr_email]);
+
+if(rows[0].attempts + 1 > 3) {
+  return res.status(429).json({ error: "Too many attempts" });
+}
+
+
+if(rows[0].v_code !== sv.hashCode(code)) {
+sql = queries['Increase attempts'];
+await con.promise().query(sql, [usr_email]);
+return res.status(400).json({ error: "Invalid code" });
+}
+else {
+sql = queries['Activate user'];
+await con.promise().query(sql, [usr_email]);
+return res.status(200).json({ message: "Account activated" });
+}
+});
+
+router.post("/resendcode", async(req, res) => {
+  const code = sv.generateVerificationCode();
+  const codeHash = sv.hashCode(code);
+  const usr_email = req.body.email;
+  var sql = queries['Update code'];
+  await con.promise().connect();
+  await con.promise().query(sql, [codeHash, usr_email]);
+  await sv.resendEmail(usr_email, code);
+  res.status(200).json({ message: "Code sent again" });
 });
 
   router.get("/testemail", async(req, res) => {

@@ -181,7 +181,19 @@ async function sendEmail(f_name, email, code) {
         <p>${code}</p>
       `
     });
+}
 
+async function resendEmail(email, code) {
+  await mailer.sendMail({
+      from: "goPress<noreply.gopress@gmail.com>",
+      to: email,
+      subject: "Verification code",
+      html: `
+        <p>Hello ${email},</p> 
+        <p>Please enter this code on the verification page:</p>
+        <p>${code}</p>
+      `
+    });
 }
 
 module.exports = {
@@ -196,5 +208,6 @@ module.exports = {
   verifyTurnstile,
   generateVerificationCode,
   hashCode,
-  sendEmail
+  sendEmail,
+  resendEmail
 };

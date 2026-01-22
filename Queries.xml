@@ -114,7 +114,7 @@
         Add user
     </QueryName>
     <QuerySQL>
-        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd, user_status, v_code) VALUES (?,?,?,?,?,?,?,?)
+        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd, user_status, v_code, attempts) VALUES (?,?,?,?,?,?,?,?,0)
     </QuerySQL>
 
     <QueryName>
@@ -122,6 +122,34 @@
     </QueryName>
     <QuerySQL>
         SELECT * FROM users WHERE email = ?
+    </QuerySQL>
+
+    <QueryName>
+        Verify user
+    </QueryName>
+    <QuerySQL>
+        SELECT v_code, attempts FROM users WHERE email = ?
+    </QuerySQL>
+
+    <QueryName>
+        Increase attempts
+    </QueryName>
+    <QuerySQL>
+        UPDATE users SET attempts = attempts + 1 WHERE email = ?
+    </QuerySQL>
+
+    <QueryName>
+        Activate user
+    </QueryName>
+    <QuerySQL>
+        UPDATE users SET user_status = 'active', v_code = null, attempts = null WHERE email = ?
+    </QuerySQL>
+
+    <QueryName>
+        Update code
+    </QueryName>
+    <QuerySQL>
+        UPDATE users SET v_code = ?, attempts = 0 WHERE email = ?
     </QuerySQL>
 
 
