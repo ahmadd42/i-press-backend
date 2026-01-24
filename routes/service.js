@@ -188,7 +188,7 @@ async function sendEmail(f_name, email, code) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
-  from: "goPress<noreply.gopress@gmail.com>",
+  from: "goPress<onboarding@resend.dev>",
   to: email,
   subject: "Verify your email",
   html: `
