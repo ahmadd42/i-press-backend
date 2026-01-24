@@ -152,5 +152,11 @@
         UPDATE users SET v_code = ?, attempts = 0 WHERE email = ?
     </QuerySQL>
 
+    <QueryName>
+        Reset password
+    </QueryName>
+    <QuerySQL>
+        UPDATE users SET pwd = ? WHERE email = ?
+    </QuerySQL>
 
 </Queries>
