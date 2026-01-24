@@ -170,7 +170,7 @@ function hashCode(code) {
   return crypto.createHash("sha256").update(code).digest("hex");
 }
 
-/*async function sendEmail(f_name, email, code) {
+async function sendEmail(f_name, email, code) {
   await mailer.sendMail({
       from: "goPress<noreply.gopress@gmail.com>",
       to: email,
@@ -182,9 +182,9 @@ function hashCode(code) {
         <p>${code}</p>
       `
     });
-}*/
+}
 
-async function sendEmail(f_name, email, code) {
+/*async function sendEmail(f_name, email, code) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
@@ -198,7 +198,7 @@ await resend.emails.send({
         <p>${code}</p>
   `
 });
-}
+}*/
 
 
 async function resendEmail(email, code) {
