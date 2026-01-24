@@ -405,14 +405,14 @@ router.post("/adduser", async(req, res) => {
   if (rows.length > 0) {
       return res.status(409).json({ error: "Email already registered" });
   }
-  else {
+
   var sql2 = queries['Add user'].replace(/\s+/g, ' ').trim();
   await con.promise().query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive', codeHash]);
   await sv.sendEmail(fname, usr_email, code);
-  res.status(200).json({message: "User added successfully"});
-  }
 
-  } catch (err) {
+  res.status(200).json({message: "User added successfully"});
+
+} catch (err) {
     res.status(500).json({ error: "Sign-up failed", details: err.message });
   }  
   });
@@ -444,11 +444,10 @@ sql = queries['Increase attempts'];
 await con.promise().query(sql, [usr_email]);
 return res.status(400).json({ error: "Invalid code" });
 }
-else {
+
 sql = queries['Activate user'];
 await con.promise().query(sql, [usr_email]);
-return res.status(200).json({ message: "Account activated" });
-}
+res.status(200).json({ message: "Account activated" });
 
 } catch (err) {
     res.status(500).json({ error: "Email verification failed", details: err.message });
