@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
 const crypto = require("crypto");
 const mailer = require("../emailer/mailer");
-const Resend = require("resend");
+const { Resend } = require("resend");
 
 const bucket = process.env.R2_BUCKET;
 
