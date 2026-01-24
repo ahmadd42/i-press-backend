@@ -414,6 +414,7 @@ router.post("/adduser", async(req, res) => {
 
 } catch (err) {
     res.status(500).json({ error: "Sign-up failed", details: err.message });
+    console.log(err.message);
   }  
   });
 
