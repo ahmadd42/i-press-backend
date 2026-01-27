@@ -170,7 +170,7 @@ function hashCode(code) {
   return crypto.createHash("sha256").update(code).digest("hex");
 }
 
-async function sendEmail(f_name, email, code) {
+/*async function sendEmail(f_name, email, code) {
   await mailer.sendMail({
       from: "goPress<noreply.gopress@gmail.com>",
       to: email,
@@ -182,9 +182,9 @@ async function sendEmail(f_name, email, code) {
         <p>${code}</p>
       `
     });
-}
+}*/
 
-/*async function sendEmail(f_name, email, code) {
+async function sendEmail(f_name, email, code) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
@@ -198,11 +198,12 @@ await resend.emails.send({
         <p>${code}</p>
   `
 });
-}*/
+}
 
 
 async function resendEmail(email, code) {
-  await mailer.sendMail({
+  const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
       from: "goPress<noreply.gopress@gmail.com>",
       to: email,
       subject: "Verification code",
@@ -213,6 +214,23 @@ async function resendEmail(email, code) {
       `
     });
 }
+
+async function testEmail() {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+await resend.emails.send({
+  from: "goPress<no-reply@gopress.it.com>",
+  to: "ahmad.rasheed5929@outlook.com",
+  subject: "Verify your email",
+  html: `
+        <p>Congratulations <b>Ahmad !</b></p>
+        <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+        <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+        <p>12345678</p>
+  `
+});
+}
+
 
 module.exports = {
   uploadFile,
@@ -227,5 +245,6 @@ module.exports = {
   generateVerificationCode,
   hashCode,
   sendEmail,
-  resendEmail
+  resendEmail,
+  testEmail
 };

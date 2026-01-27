@@ -484,6 +484,16 @@ router.post("/resetpass", async(req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Password reset failed", details: err.message });
   }
+});
+
+router.post("/testemail", async(req, res) => {
+try {  
+  await sv.testEmail();
+    res.status(200).json({ message: "Email sent" });
+} catch (err) {
+    res.status(500).json({ error: "Email sending failed", details: err.message });
+  }
 
 });
+
 module.exports = router;
