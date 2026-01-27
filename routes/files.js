@@ -486,7 +486,7 @@ router.post("/resetpass", async(req, res) => {
   }
 });
 
-router.post("/testemail", async(req, res) => {
+router.get("/testemail", async(req, res) => {
 try {  
   await sv.testEmail();
     res.status(200).json({ message: "Email sent" });
