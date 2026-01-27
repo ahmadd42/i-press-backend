@@ -237,7 +237,7 @@ try {
   if (!passwordMatch)   return res.status(401).json({ error: "Invalid credentials" });
 
   // if the email of a new user has not been verified yet
-  if(user.user_status === "inactive")   return res.status(401).json({ error: "Email not verified" });
+  if(user.user_status === "inactive")   return res.status(402).json({ error: "Email not verified", f_name: user.first_name });
 
   // Generate Login token
   const loginToken = jwt.sign(
