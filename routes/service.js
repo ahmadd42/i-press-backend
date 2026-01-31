@@ -227,15 +227,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 await resend.emails.send({
   from: "goPress<no-reply@gopress.it.com>",
   to: "ahmadd42@gmail.com",
-  subject: "Welcome to goPress",
-  html: `
-        <p>Congratulations <b>Ahmad !</b></p>
-        <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
-        <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
-        <p>85762319</p>
-        <p></p>
-        <p>Regards,</p>
-        <p>goPress Team</p> 
+  subject: "Why the color of the sky is blue",
+  html: `<p>Daylight is actually not white. Sunlight is really made up of 7 colors. When the sunlight hits the earth's
+  atmosphere, it is dispersed into its constituent 7 colors, of which, blue is the most dominant. That's why the 
+  color of sky is blue.</p>
+  <p>If you want information on any other scientific topics, please do let me know.</P>
+  <p>Bye for now.</p>
+  <p>Regards,</p>
+  <p>Ahmad</p>
   `
 });
 }
