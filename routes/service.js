@@ -190,7 +190,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 await resend.emails.send({
   from: "goPress<no-reply@gopress.it.com>",
   to: email,
-  subject: "Verify your email",
+  subject: "Welcome to goPress",
   html: `
         <p>Congratulations <b>${f_name} !</b></p>
         <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
@@ -198,7 +198,7 @@ await resend.emails.send({
         <p>${code}</p>
         <p></p>
         <p>Regards,</p>
-        <p>goPress</p> 
+        <p>goPress Team</p> 
   `
 });
 }
@@ -211,12 +211,12 @@ async function resendEmail(email, code) {
       to: email,
       subject: "Verification code",
       html: ` 
-        <p>We received a request to reset your account password. To continue, please enter this code on the verification page:</p>
+        <p>We received a request to reset your account password on goPress. To continue, please enter this code on the verification page:</p>
         <p>${code}</p>
         <p>If you didn't initiate this request, please ignore this email.</p>
         <p></p>
         <p>Regards,</p>
-        <p>goPress</p> 
+        <p>goPress Team</p> 
       `
     });
 }
@@ -226,13 +226,16 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
   from: "goPress<no-reply@gopress.it.com>",
-  to: "ahmad.rasheed5929@outlook.com",
-  subject: "Verify your email",
+  to: "ahmadd42@gmail.com",
+  subject: "Welcome to goPress",
   html: `
         <p>Congratulations <b>Ahmad !</b></p>
         <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
         <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
-        <p>12345678</p>
+        <p>85762319</p>
+        <p></p>
+        <p>Regards,</p>
+        <p>goPress Team</p> 
   `
 });
 }
