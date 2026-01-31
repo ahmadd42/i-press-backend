@@ -210,8 +210,7 @@ async function resendEmail(email, code) {
       from: "goPress<no-reply@gopress.it.com>",
       to: email,
       subject: "Verification code",
-      html: `
-        <p>Hello ${email},</p> 
+      html: ` 
         <p>We received a request to reset your account password. To continue, please enter this code on the verification page:</p>
         <p>${code}</p>
         <p>If you didn't initiate this request, please ignore this email.</p>
