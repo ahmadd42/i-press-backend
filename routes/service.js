@@ -196,6 +196,9 @@ await resend.emails.send({
         <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
         <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
         <p>${code}</p>
+        <p></p>
+        <p>Regards,</p>
+        <p>goPress</p> 
   `
 });
 }
@@ -209,8 +212,12 @@ async function resendEmail(email, code) {
       subject: "Verification code",
       html: `
         <p>Hello ${email},</p> 
-        <p>Please enter this code on the verification page:</p>
+        <p>We received a request to reset your account password. To continue, please enter this code on the verification page:</p>
         <p>${code}</p>
+        <p>If you didn't initiate this request, please ignore this email.</p>
+        <p></p>
+        <p>Regards,</p>
+        <p>goPress</p> 
       `
     });
 }
