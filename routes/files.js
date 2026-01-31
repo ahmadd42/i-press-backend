@@ -460,9 +460,14 @@ router.post("/resendcode", async(req, res) => {
   const code = sv.generateVerificationCode();
   const codeHash = sv.hashCode(code);
   const usr_email = req.body.email;
-  var sql = queries['Update code'];
+  var sql = queries['Find user'];
   await con.promise().connect();
-  await con.promise().query(sql, [codeHash, usr_email]);
+  const [rows] = await con.promise().query(sql, [usr_email]);
+  if (rows.length === 0) {
+      return res.status(400).json({ error: "Email not found" });
+  }
+  var sql2 = queries['Update code'];
+  await con.promise().query(sql2, [codeHash, usr_email]);
   await sv.resendEmail(usr_email, code);
   res.status(200).json({ message: "Code sent again" });
 
