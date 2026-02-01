@@ -192,14 +192,16 @@ await resend.emails.send({
   to: email,
   subject: "Welcome to goPress",
   html: `
-        <p>Congratulations <b>${f_name} !</b></p>
-        <p>You have successfully registered your account with goPress. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
-        <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
-        <p>${code}</p>
-        <p></p>
-        <p>Regards,</p>
-        <p>goPress Team</p> 
-  `
+<p>Congratulations ${f_name} !</p>
+<p>Your account has been successfully created with <strong>goPress</strong>. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+<p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+<div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
+${code}
+</div>
+<p></p>
+<p>Regards,</p>
+<p>goPress Team</p> 
+`
 });
 }
 
@@ -209,10 +211,12 @@ async function resendEmail(email, code) {
       await resend.emails.send({
       from: "goPress<no-reply@gopress.it.com>",
       to: email,
-      subject: "Verification code",
+      subject: "Your confirmation code",
       html: ` 
-        <p>We received a request to reset your account password on goPress. To continue, please enter this code on the verification page:</p>
-        <p>${code}</p>
+        <p>We received a request to reset your account password on <strong>goPress</strong>. To continue, please enter this code on the verification page:</p>
+        <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
+        ${code}
+        </div>
         <p>If you didn't initiate this request, please ignore this email.</p>
         <p></p>
         <p>Regards,</p>
