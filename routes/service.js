@@ -241,7 +241,8 @@ async function testEmail() {
         <p>If you didn't initiate this request, please ignore this email.</p>
         <p></p>
         <p>Regards,</p>
-        <p>goPress Team</p> 
+        <p>goPress Team</p>
+        <p style="margin-top:4em;">Sent via Microsoft Outlook on behalf of goPress</p> 
       `
 
     });
