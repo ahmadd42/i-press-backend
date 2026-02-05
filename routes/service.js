@@ -227,7 +227,8 @@ async function resendEmail(email, code) {
 }
 
 async function testEmail() {
-    await mailer.sendMail({
+  const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
       from: "goPress<no-reply@gopress.it.com>",
       to: "ahmad.rasheed5929@outlook.com",
       subject: "Welcome to goPress",
