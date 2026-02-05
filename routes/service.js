@@ -230,7 +230,7 @@ async function testEmail() {
   const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "goPress<no-reply@gopress.it.com>",
-      to: "ahmad.rasheed5929@outlook.com",
+      to: "ahmadd42@gmail.com",
       subject: "Welcome to goPress",
       html: `
     <div style="margin-top:1em;margin-bottom:2em;">
