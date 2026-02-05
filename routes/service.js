@@ -230,19 +230,20 @@ async function testEmail() {
   const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "goPress<no-reply@gopress.it.com>",
-      to: "ahmad.rasheed5929@outlook.com",
+      to: "ahmadd42@gmail.com",
       subject: "Welcome to goPress",
       html: `
     <div style="margin-top:1em;margin-bottom:2em;">
     <h1>goPress</h1>
     </div>       
-    <p>Congratulations Ahmad !</p>
+    <p>Congratulations Ahmad,</p>
     <p>Your account has been successfully created with <strong>goPress</strong>. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
     <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
     <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
     123456
     </div>
     <p></p>
+    <p>This code will expire in 30 minutes</p>
     <p>Regards,</p>
     <p>goPress Team</p> 
       `
