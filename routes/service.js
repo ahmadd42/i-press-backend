@@ -11,6 +11,7 @@ const fetch = require("node-fetch");
 const crypto = require("crypto");
 const mailer = require("../emailer/mailer");
 const { Resend } = require("resend");
+const net = require('net');
 
 const bucket = process.env.R2_BUCKET;
 
@@ -247,6 +248,30 @@ async function testEmail() {
     });
 }
 
+const testSMTP = (host, port) => {
+  return new Promise((resolve) => {
+    const socket = net.createConnection(port, host);
+
+    socket.setTimeout(5000);
+
+    socket.on("connect", () => {
+      console.log(`✅ Connected to ${host}:${port}`);
+      socket.destroy();
+      resolve(true);
+    });
+
+    socket.on("timeout", () => {
+      console.log(`⏱️ Timeout connecting to ${host}:${port}`);
+      socket.destroy();
+      resolve(false);
+    });
+
+    socket.on("error", (err) => {
+      console.log(`❌ Error ${host}:${port}`, err.code);
+      resolve(false);
+    });
+  });
+};
 
 module.exports = {
   uploadFile,
@@ -262,5 +287,6 @@ module.exports = {
   hashCode,
   sendEmail,
   resendEmail,
-  testEmail
+  testEmail,
+  testSMTP
 };

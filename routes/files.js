@@ -498,7 +498,12 @@ try {
 } catch (err) {
     res.status(500).json({ error: "Email sending failed", details: err.message });
   }
-
 });
+
+router.get("/testsmtp", async(req, res) => {
+  await sv.testSMTP("smtp.gmail.com", 587);
+  await sv.testSMTP("smtp.gmail.com", 465);
+  await sv.testSMTP("smtp.gmail.com", 25);
+});  
 
 module.exports = router;
