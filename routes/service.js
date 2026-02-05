@@ -227,24 +227,23 @@ async function resendEmail(email, code) {
 
 async function testEmail() {
     await mailer.sendMail({
-      from: "goPress<no-reply.gopress@outlook.com>",
+      from: "goPress<no-reply@gopress.it.com>",
       to: "ahmadd42@gmail.com",
-      subject: "Your confirmation code for goPress",
-      html: ` 
-        <div style="margin-top:1em;margin-bottom:1em;">
-        <h1>goPress</h1>
-        </div>
-        <p>We received a request to reset your account password on <strong>goPress</strong>. To continue, please enter this code on the verification page:</p>
-        <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
-        1 2 3 4 5 6 7
-        </div>
-        <p>If you didn't initiate this request, please ignore this email.</p>
-        <p></p>
-        <p>Regards,</p>
-        <p>goPress Team</p>
-        <p style="margin-top:4em;">Sent via Microsoft Outlook on behalf of goPress</p> 
+      subject: "Welcome to goPress",
+      html: `
+    <div style="margin-top:1em;margin-bottom:2em;">
+    <h1>goPress</h1>
+    </div>       
+    <p>Congratulations Ahmad !</p>
+    <p>Your account has been successfully created with <strong>goPress</strong>. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+    <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+    <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
+    123456
+    </div>
+    <p></p>
+    <p>Regards,</p>
+    <p>goPress Team</p> 
       `
-
     });
 }
 
