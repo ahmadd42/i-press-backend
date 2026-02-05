@@ -228,7 +228,7 @@ async function resendEmail(email, code) {
 async function testEmail() {
     await mailer.sendMail({
       from: "goPress<no-reply@gopress.it.com>",
-      to: "ahmadd42@gmail.com",
+      to: "ahmad.rasheed5929@outlook.com",
       subject: "Welcome to goPress",
       html: `
     <div style="margin-top:1em;margin-bottom:2em;">
