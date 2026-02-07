@@ -189,38 +189,44 @@ async function sendEmail(f_name, email, code) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
-  from: "goPress<no-reply@gopress.it.com>",
+  from: "goPress<noreply@gopress.online>",
   to: email,
   subject: "Welcome to goPress",
   html: `
-<p>Congratulations ${f_name} !</p>
-<p>Your account has been successfully created with <strong>goPress</strong>. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
-<p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
-<div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
-${code}
-</div>
-<p></p>
-<p>Regards,</p>
-<p>goPress Team</p> 
+    <div style="margin-top:1em;margin-bottom:2em;">
+    <h1>goPress</h1>
+    </div>       
+    <p>Congratulations ${f_name},</p>
+    <p>Your account has been successfully created with <strong>goPress</strong>. On this platform, you can show your work to the world, like and comment on other's content and much more.</p> 
+    <p>Just one more step to go. Enter this code on the verification page to activate your account:</p>
+    <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
+    ${code}
+    </div>
+    <p></p>
+    <p>This code will expire in 15 minutes</p>
+    <p style="margin-top:2em;">Regards,</p>
+    <p>goPress Team</p> 
 `
 });
 }
 
-
 async function resendEmail(email, code) {
   const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-      from: "goPress<no-reply@gopress.it.com>",
+      from: "goPress<noreply@gopress.online>",
       to: email,
       subject: "Your confirmation code",
-      html: ` 
-        <p>We received a request to reset your account password on <strong>goPress</strong>. To continue, please enter this code on the verification page:</p>
+      html: `
+        <div style="margin-top:1em;margin-bottom:2em;">
+        <h1>goPress</h1>
+        </div>       
+        <p>We received a request to reset your account password on <strong>goPress</strong>. To continue, please enter this code on the verification page within 15 minutes:</p>
         <div style="margin-top:1em;margin-bottom:1em;padding-top:1.3em;padding-left:1em;width:7em;height:3em;background-color:#cfd1d1;color:#6b6d6d;font-family:Lucida Sans Unicode;font-size:3em;">
         ${code}
         </div>
-        <p>If you didn't initiate this request, please ignore this email.</p>
         <p></p>
-        <p>Regards,</p>
+        <p>If you didn't initiate this request, please ignore this email.</p>
+        <p style="margin-top:2em;">Regards,</p>
         <p>goPress Team</p> 
       `
     });
