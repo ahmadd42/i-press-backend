@@ -407,7 +407,11 @@ router.post("/adduser", async(req, res) => {
   }
 
   var sql2 = queries['Add user'].replace(/\s+/g, ' ').trim();
-  await con.promise().query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive', codeHash]);
+  await con.promise().query(sql2, [usr_email, usr_country, fname, lname, dispname, hash, 'inactive']);
+
+  var sql3 = queries['Add code'].replace(/\s+/g, ' ').trim();
+  await con.promise().query(sql3, [usr_email, codeHash]);
+  
   await sv.sendEmail(fname, usr_email, code);
 
   res.status(200).json({message: "User added successfully"});
@@ -436,19 +440,37 @@ var sql = queries['Verify user'];
 await con.promise().connect();
 const [rows] = await con.promise().query(sql, [usr_email]);
 
-if(rows[0].attempts + 1 > 3) {
+if (rows.length === 0) {
+      return res.status(400).json({ error: "Invalid or expired code" });
+}
+
+const record = rows[0];
+
+if (new Date(record.expires_at) < new Date()) {
+  sql = queries['Delete code'];
+  await con.promise().query(sql, [record.id]);
+  return res.status(400).json({ error: "Code expired" });
+}
+
+if(record.attempts + 1 > 3) {
+  sql = queries['Delete code'];
+  await con.promise().query(sql, [record.id]);
   return res.status(429).json({ error: "Too many attempts" });
 }
 
-if(rows[0].v_code !== sv.hashCode(code)) {
+if(record.code_hash !== sv.hashCode(code)) {
 sql = queries['Increase attempts'];
-await con.promise().query(sql, [usr_email]);
+await con.promise().query(sql, [record.id]);
 return res.status(400).json({ error: "Invalid code" });
 }
 
 sql = queries['Activate user'];
 await con.promise().query(sql, [usr_email]);
-res.status(200).json({ message: "Account activated" });
+
+sql = queries['Delete code'];
+await con.promise().query(sql, [record.id]);
+
+res.status(200).json({ message: "Email verified" });
 
 } catch (err) {
     res.status(500).json({ error: "Email verification failed", details: err.message });
@@ -466,8 +488,12 @@ router.post("/resendcode", async(req, res) => {
   if (rows.length === 0) {
       return res.status(400).json({ error: "Email not found" });
   }
-  var sql2 = queries['Update code'];
-  await con.promise().query(sql2, [codeHash, usr_email]);
+  var sql2 = queries['Delete previous code'];
+  await con.promise().query(sql2, [usr_email]);
+
+  var sql3 = queries['Add code'].replace(/\s+/g, ' ').trim();
+  await con.promise().query(sql3, [usr_email, codeHash]);
+
   await sv.resendEmail(usr_email, code);
   res.status(200).json({ message: "Code sent again" });
 

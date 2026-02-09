@@ -114,7 +114,14 @@
         Add user
     </QueryName>
     <QuerySQL>
-        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd, user_status, v_code, attempts) VALUES (?,?,?,?,?,?,?,?,0)
+        INSERT INTO users (email, country, first_name, last_name, disp_name, pwd, user_status) VALUES (?,?,?,?,?,?,?)
+    </QuerySQL>
+
+    <QueryName>
+        Add code
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO email_verifications (user_id, code_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 5 MINUTE))
     </QuerySQL>
 
     <QueryName>
@@ -128,28 +135,21 @@
         Verify user
     </QueryName>
     <QuerySQL>
-        SELECT v_code, attempts FROM users WHERE email = ?
+        SELECT * FROM email_verifications WHERE user_id = ?
     </QuerySQL>
 
     <QueryName>
         Increase attempts
     </QueryName>
     <QuerySQL>
-        UPDATE users SET attempts = attempts + 1 WHERE email = ?
+        UPDATE email_verifications SET attempts = attempts + 1 WHERE id = ?
     </QuerySQL>
 
     <QueryName>
         Activate user
     </QueryName>
     <QuerySQL>
-        UPDATE users SET user_status = 'active', v_code = null, attempts = null WHERE email = ?
-    </QuerySQL>
-
-    <QueryName>
-        Update code
-    </QueryName>
-    <QuerySQL>
-        UPDATE users SET v_code = ?, attempts = 0 WHERE email = ?
+        UPDATE users SET user_status = 'active' WHERE email = ?
     </QuerySQL>
 
     <QueryName>
@@ -158,5 +158,20 @@
     <QuerySQL>
         UPDATE users SET pwd = ? WHERE email = ?
     </QuerySQL>
+
+    <QueryName>
+        Delete code
+    </QueryName>
+    <QuerySQL>
+        DELETE FROM email_verifications WHERE id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Delete previous code
+    </QueryName>
+    <QuerySQL>
+        DELETE FROM email_verifications WHERE user_id = ?
+    </QuerySQL>
+
 
 </Queries>
