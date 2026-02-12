@@ -482,6 +482,8 @@ router.post("/resendcode", async(req, res) => {
   const code = sv.generateVerificationCode();
   const codeHash = sv.hashCode(code);
   const usr_email = req.body.email;
+  const opr = req.body.operation;
+  var purpose = "";
   var sql = queries['Find user'];
   await con.promise().connect();
   const [rows] = await con.promise().query(sql, [usr_email]);
@@ -494,7 +496,14 @@ router.post("/resendcode", async(req, res) => {
   var sql3 = queries['Add code'].replace(/\s+/g, ' ').trim();
   await con.promise().query(sql3, [usr_email, codeHash]);
 
-  await sv.resendEmail(usr_email, code);
+if(opr === "activate") {
+  purpose = "activate your account";
+}
+else {
+  purpose = "reset your account password";
+}
+
+  await sv.resendEmail(usr_email, code, purpose);
   res.status(200).json({ message: "Code sent again" });
 
   } catch (err) {

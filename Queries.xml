@@ -121,7 +121,7 @@
         Add code
     </QueryName>
     <QuerySQL>
-        INSERT INTO email_verifications (user_id, code_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 5 MINUTE))
+        INSERT INTO email_verifications (user_id, code_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE))
     </QuerySQL>
 
     <QueryName>
