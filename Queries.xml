@@ -25,22 +25,22 @@
         Get basic info
     </QueryName>
     <QuerySQL>
-        SELECT users.disp_name AS 'uploader', documents.extension AS 'ext', docmetadata.downloadable 
-        AS 'can_download', docmetadata.title AS 'title' 
-        FROM documents, docmetadata, users 
-        WHERE documents.content_id = ? AND documents.content_id = docmetadata.content_id 
-        AND documents.user_id = users.email        
+        SELECT u.disp_name AS 'uploader', d.extension AS 'ext', mt.downloadable 
+        AS 'can_download', mt.title AS 'title', mt.descr AS 'Description' 
+        FROM documents d JOIN docmetadata mt JOIN users u 
+        ON d.content_id = mt.content_id AND d.user_id = u.email        
+        WHERE d.content_id = ?
     </QuerySQL>
 
     <QueryName>
         Get feeds
     </QueryName>
     <QuerySQL>
-        SELECT documents.content_id AS 'ContentID', documents.user_id AS 'UserID', documents.shared_on 
-        AS 'SharedOn', documents.extension AS 'Extension', docmetadata.title AS 'DocumentTitle',
-        docmetadata.descr AS 'Description', docmetadata.author AS 'Author' 
-        FROM documents, docmetadata
-        WHERE documents.content_id = docmetadata.content_id AND documents.shared_on IS NOT NULL
+        SELECT d.content_id AS 'ContentID', d.user_id AS 'UserID', d.shared_on 
+        AS 'SharedOn', d.extension AS 'Extension', mt.title AS 'DocumentTitle',
+        mt.descr AS 'Description', mt.author AS 'Author' 
+        FROM documents d JOIN docmetadata mt
+        ON d.content_id = mt.content_id AND d.shared_on IS NOT NULL
     </QuerySQL>
 
     <QueryName>
