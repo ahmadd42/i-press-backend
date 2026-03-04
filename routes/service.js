@@ -17,7 +17,7 @@ const bucket = process.env.R2_BUCKET;
 
 async function getFileUrl(key) {
   const command = new GetObjectCommand({ Bucket: bucket, Key: key, ResponseContentDisposition: "inline" });
-  const url = await getSignedUrl(r2, command, { expiresIn: 5 }); // 1 hour
+  const url = await getSignedUrl(r2, command, { expiresIn: 10 }); // 1 hour
   return url;
 }
 function getMimeType(ext) {

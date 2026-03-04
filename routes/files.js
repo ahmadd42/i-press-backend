@@ -34,7 +34,7 @@ router.use(bodyParser.json());
 
 // Manual CORS headers middleware
 router.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', "*");
+  res.setHeader('Access-Control-Allow-Origin', "gopress.online");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
@@ -540,5 +540,20 @@ router.get("/testsmtp", async(req, res) => {
   await sv.testSMTP("smtp.gmail.com", 465);
   await sv.testSMTP("smtp.gmail.com", 25);
 });  
+
+router.post("/searchkeyword", async(req, res) => {
+  const kw = req.body.keyword;
+  try {
+  var sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
+
+  await con.promise().connect(); 
+  const [rows] = await con.promise().query(sql, [kw]);
+  res.json(rows);  
+
+} catch (err) {
+    res.status(500).json({ error: "Failed to get search results", details: err.message });
+}  
+});
+
 
 module.exports = router;
