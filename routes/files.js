@@ -542,7 +542,7 @@ router.get("/testsmtp", async(req, res) => {
 });  
 
 router.post("/searchkeyword", async(req, res) => {
-  const kw = req.body.keyword;
+  const kw = `%${req.body.keyword}%`;
   try {
   var sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
 
