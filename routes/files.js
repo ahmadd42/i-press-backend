@@ -547,7 +547,7 @@ router.post("/searchkeyword", async(req, res) => {
   var sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
 
   await con.promise().connect(); 
-  const [rows] = await con.promise().query(sql, [kw]);
+  const [rows] = await con.promise().query(sql, [kw, kw, kw]);
   res.json(rows);  
 
 } catch (err) {
