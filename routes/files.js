@@ -542,12 +542,17 @@ router.get("/testsmtp", async(req, res) => {
 });  
 
 router.post("/searchkeyword", async(req, res) => {
-  const kw = `%${req.body.keyword}%`;
-  try {
-  var sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
+  let kw = req.body.keyword;
+  let kw2 = `%${req.body.keyword}%`;
+  let sql = "";
 
+  try {
+  sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
   await con.promise().connect(); 
-  const [rows] = await con.promise().query(sql, [kw, kw, kw]);
+  const [rows] = await con.promise().query(sql, [kw, kw2]);
+  if(rows.length === 0)
+    return res.status(400).json({ msg: "No results found for your search" });
+
   res.json(rows);  
 
 } catch (err) {

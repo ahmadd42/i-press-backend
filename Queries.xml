@@ -177,24 +177,16 @@
         Keyword search
     </QueryName>
     <QuerySQL>
-        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title,
-        mt.descr, mt.author 
-        FROM documents d JOIN docmetadata mt
-        ON d.content_id = mt.content_id
-        WHERE mt.title LIKE ?
+        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title, mt.descr, mt.author
+        FROM documents d
+        JOIN docmetadata mt ON d.content_id = mt.content_id
+        WHERE MATCH (mt.title, mt.descr, mt.author)
+        AGAINST (? IN NATURAL LANGUAGE MODE);
         UNION
-        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title,
-        mt.descr, mt.author 
-        FROM documents d JOIN docmetadata mt
-        ON d.content_id = mt.content_id
-        WHERE mt.author LIKE ?
-        UNION
-        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title,
-        mt.descr, mt.author 
-        FROM documents d JOIN docmetadata mt
-        ON d.content_id = mt.content_id
+        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title, mt.descr, mt.author
+        FROM documents d
+        JOIN docmetadata mt ON d.content_id = mt.content_id
         WHERE d.user_id LIKE ?
     </QuerySQL>
-
 
 </Queries>
