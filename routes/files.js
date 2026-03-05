@@ -543,17 +543,20 @@ router.get("/testsmtp", async(req, res) => {
 
 router.post("/searchkeyword", async(req, res) => {
   let kw = req.body.keyword;
-  let kw2 = `%${req.body.keyword}%`;
-  let sql = "";
+  let sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
+  let sql2 = queries['Uploader search'].replace(/\s+/g, ' ').trim();
 
   try {
-  sql = queries['Keyword search'].replace(/\s+/g, ' ').trim();
-  await con.promise().connect(); 
-  const [rows] = await con.promise().query(sql, [kw, kw2]);
-  if(rows.length === 0)
-    return res.status(400).json({ msg: "No results found for your search" });
 
-  res.json(rows);  
+  await con.promise().connect(); 
+  const [rows] = await con.promise().query(sql, [kw]);
+  const [rows2] = await con.promise().query(sql2, [`%${kw}%`]);
+
+  if(rows.length === 0 && rows2.length === 0) {
+    return res.status(400).json({ msg: "No results found for your search" });
+  }
+
+  res.json([...rows, ...rows2]);  
 
 } catch (err) {
     res.status(500).json({ error: "Failed to get search results", details: err.message });
