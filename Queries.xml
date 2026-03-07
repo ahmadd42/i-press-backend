@@ -25,8 +25,7 @@
         Get basic info
     </QueryName>
     <QuerySQL>
-        SELECT u.disp_name AS 'uploader', d.extension AS 'ext', mt.downloadable 
-        AS 'can_download', mt.title AS 'title', mt.descr AS 'Description' 
+        SELECT u.disp_name, d.extension, mt.downloadable, mt.title, mt.descr 
         FROM documents d JOIN docmetadata mt JOIN users u 
         ON d.content_id = mt.content_id AND d.user_id = u.email        
         WHERE d.content_id = ?
@@ -36,9 +35,7 @@
         Get feeds
     </QueryName>
     <QuerySQL>
-        SELECT d.content_id AS 'ContentID', d.user_id AS 'UserID', d.shared_on 
-        AS 'SharedOn', d.extension AS 'Extension', mt.title AS 'DocumentTitle',
-        mt.descr AS 'Description', mt.author AS 'Author' 
+        SELECT d.content_id, d.user_id, d.shared_on, d.extension, mt.title, mt.descr, mt.author 
         FROM documents d JOIN docmetadata mt
         ON d.content_id = mt.content_id AND d.shared_on IS NOT NULL
     </QuerySQL>
@@ -54,8 +51,7 @@
         Get comments
     </QueryName>
     <QuerySQL>
-        SELECT comments.comment_id AS 'CommentID', comments.comment AS 'Comment', users.disp_name
-        AS 'DisplayName' 
+        SELECT comments.comment_id, comments.comment, users.disp_name
         FROM comments, users 
         WHERE comments.content_id = ? AND comments.user_id = users.email 
         ORDER BY comments.posted_on ASC
