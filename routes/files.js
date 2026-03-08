@@ -213,16 +213,16 @@ router.post("/hashPwd", async(req, res) => {
 // Login endpoint
 router.post("/login", async(req, res) => {
 try {
-  const { email, password, captchaToken } = req.body;
+  const { email, password } = req.body;
 
-  const captcha = await sv.verifyTurnstile(
+/*  const captcha = await sv.verifyTurnstile(
   captchaToken,
   req.ip
   );
 
   if (!captcha.success) {
   return res.status(400).json({ error: "Captcha failed" });
-  }
+  }*/
 
   var sql = queries['Sign in'];
   await con.promise().connect(); 
