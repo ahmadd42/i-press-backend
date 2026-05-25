@@ -32,6 +32,13 @@
     </QuerySQL>
 
     <QueryName>
+        Get title desc
+    </QueryName>
+    <QuerySQL>
+        SELECT title, descr FROM docmetadata WHERE content_id = ?
+    </QuerySQL>
+
+    <QueryName>
         Get feeds
     </QueryName>
     <QuerySQL>

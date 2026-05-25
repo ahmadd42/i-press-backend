@@ -165,7 +165,22 @@ router.post("/getbasicinfo", async(req, res) => {
   }  
   });
 
-router.post("/getfeeds", async(req, res) => {
+router.post("/gettitleanddes", async(req, res) => {
+  try {
+  const conID = req.body.contentid;
+  var sql = queries['Get title desc'].replace(/\s+/g, ' ').trim();
+
+  await con.promise().connect(); 
+  const [rows] = await con.promise().query(sql, [conID]);  
+  res.json(rows);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get info", details: err.message });
+  }  
+  });
+
+
+  router.post("/getfeeds", async(req, res) => {
   try {
   var sql = queries['Get feeds'].replace(/\s+/g, ' ').trim();
 
@@ -563,5 +578,24 @@ router.post("/searchkeyword", async(req, res) => {
 }  
 });
 
+router.get('/:id/:slug', async(req, res) => {
+    try {
+  const conID = req.params.id;
+  var sql = queries['Get title desc'].replace(/\s+/g, ' ').trim();
+
+  await con.promise().connect(); 
+  const [rows] = await con.promise().query(sql, [conID]);  
+
+      // Pass the title variable to the template
+    res.render('index', { title: rows[0].title, description: rows[0].descr });
+
+
+//  res.json(rows[0].title);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get info", details: err.message });
+  }  
+
+});
 
 module.exports = router;
