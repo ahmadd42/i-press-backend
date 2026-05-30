@@ -196,7 +196,8 @@ router.post("/gettitleanddes", async(req, res) => {
 router.post("/recordmetadata", sv.verifyAuth, async(req, res) => {
 try {
   const dt = await sv.getCurrentDateTime();
-  const params = [req.body.contentid, req.body.title, req.body.des, req.body.downloadable, req.body.author, req.body.cat, dt, req.body.contentid];
+  const slug = sv.generateSlug(req.body.title);
+  const params = [req.body.contentid, req.body.title, req.body.des, req.body.downloadable, req.body.author, req.body.cat, slug, dt, req.body.contentid];
 
   await con.promise().connect();
   var sql = queries['Add content metadata'] + '; ' + queries['Update shared on'];
@@ -576,26 +577,6 @@ router.post("/searchkeyword", async(req, res) => {
 } catch (err) {
     res.status(500).json({ error: "Failed to get search results", details: err.message });
 }  
-});
-
-router.get('/:id/:slug', async(req, res) => {
-    try {
-  const conID = req.params.id;
-  var sql = queries['Get title desc'].replace(/\s+/g, ' ').trim();
-
-  await con.promise().connect(); 
-  const [rows] = await con.promise().query(sql, [conID]);  
-
-      // Pass the title variable to the template
-    res.render('index', { title: rows[0].title, description: rows[0].descr });
-
-
-//  res.json(rows[0].title);
-
-  } catch (err) {
-    res.status(500).json({ error: "Failed to get info", details: err.message });
-  }  
-
 });
 
 module.exports = router;

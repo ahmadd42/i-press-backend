@@ -10,8 +10,8 @@
         Add content metadata
     </QueryName>
     <QuerySQL>
-        INSERT INTO docmetadata (content_id, title, descr, downloadable, author, category) 
-        VALUES (?,?,?,?,?,?)
+        INSERT INTO docmetadata (content_id, title, descr, downloadable, author, category, title_slug) 
+        VALUES (?,?,?,?,?,?,?)
     </QuerySQL>
 
     <QueryName>

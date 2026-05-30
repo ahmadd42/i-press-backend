@@ -281,6 +281,22 @@ const testSMTP = (host, port) => {
   });
 };
 
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .trim()
+    // remove special chars except spaces & hyphens
+    .replace(/[^a-z0-9\s-]/g, '')
+    // replace spaces with hyphens
+    .replace(/\s+/g, '-')
+    // remove multiple hyphens
+    .replace(/-+/g, '-')
+    // limit length (important)
+    .substring(0, 80)
+    // remove trailing hyphen
+    .replace(/-$/, '');
+}
+
 module.exports = {
   uploadFile,
   getFileUrl,
@@ -296,5 +312,6 @@ module.exports = {
   sendEmail,
   resendEmail,
   testEmail,
-  testSMTP
+  testSMTP,
+  generateSlug
 };
