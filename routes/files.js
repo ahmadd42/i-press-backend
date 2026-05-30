@@ -203,7 +203,7 @@ try {
   var sql = queries['Add content metadata'] + '; ' + queries['Update shared on'];
   sql = sql.replace(/\s+/g, ' ').trim();
   await con.promise().query(sql, params); 
-  res.status(200).json({ Message: "Document information updated successfully" });
+  res.status(200).json({ Message: "Document information updated successfully", title_slug: slug });
 
 } catch (err) {
     res.status(500).json({ error: "Failed to get content feeds", details: err.message });
