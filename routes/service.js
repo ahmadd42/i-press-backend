@@ -3,6 +3,8 @@ const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fs = require('fs');
 const path = require('path');
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegPath = require('ffmpeg-static');
 const xml2js = require('xml2js');
 const { fromPath } = require("pdf2pic");
 const { exec } = require("child_process");
@@ -14,6 +16,7 @@ const { Resend } = require("resend");
 const net = require('net');
 
 const bucket = process.env.R2_BUCKET;
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 async function getFileUrl(key) {
   const command = new GetObjectCommand({ Bucket: bucket, Key: key, ResponseContentDisposition: "inline" });
@@ -297,6 +300,24 @@ function generateSlug(title) {
     .replace(/-$/, '');
 }
 
+async function generateThumbnail(videoPath, thumbnailPath) {
+  return new Promise((resolve, reject) => {
+
+    ffmpeg(videoPath)
+      .seekInput(2)
+      .outputOptions([
+        '-vf',
+        'movie=assets/play-btn.png[watermark];[in][watermark]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2[out]'
+      ])
+      .frames(1)
+      .output(thumbnailPath)
+      .on('end', resolve)
+      .on('error', reject)
+      .run();
+  });
+}
+
+
 module.exports = {
   uploadFile,
   getFileUrl,
@@ -313,5 +334,6 @@ module.exports = {
   resendEmail,
   testEmail,
   testSMTP,
-  generateSlug
+  generateSlug,
+  generateThumbnail
 };

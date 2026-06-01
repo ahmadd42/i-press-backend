@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const { PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
 const { exec } = require("child_process");
+//const { generateThumbnail } = require('./thumbnail');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // memory storage
@@ -65,12 +66,19 @@ to the changed name. The changed name will also be used as Document ID in the da
     await fs.promises.rename(oldPath, newPath);
 
     console.log("Renamed:", newPath);
+    let outdir = path.join('uploads/');
 
   try {
+    //// Generate PDF preview
     if(ext === ".pdf") {
-      let outdir = path.join('uploads/');
       await sv.generatePdfPreview(newPath, outdir, base);
       await sv.uploadFile(path.join(outdir, `${base}.jpg`));
+    }
+    //// Generate video preview
+    else if(ext === ".mp4") {
+    const previewPath = path.join(outdir, `${base}.jpg`);
+    const thumbnailPath = await sv.generateThumbnail(newPath, previewPath);
+    await sv.uploadFile(previewPath);
     }
 
     // Send original file to Cloudflare storage
@@ -577,6 +585,26 @@ router.post("/searchkeyword", async(req, res) => {
 } catch (err) {
     res.status(500).json({ error: "Failed to get search results", details: err.message });
 }  
+});
+
+router.post("/getthumbnail", async(req, res) => {
+  const id = req.body.id;
+try {
+
+  const videoPath = `./uploads/${id}.mp4`;
+  const thumbnailPath = await sv.generateThumbnail(
+    videoPath,
+    `./uploads/${id}.jpg`
+  );
+
+  console.log('Thumbnail created:', thumbnailPath);
+
+  // Upload thumbnailPath to R2
+  // Save URL in database
+res.status(200).json({ message: "Preview generated" });
+} catch (err) {
+  console.error('Thumbnail generation failed:', err);
+}
 });
 
 module.exports = router;
