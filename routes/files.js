@@ -669,7 +669,7 @@ router.get("/getCaptcha", async (req, res) => {
             height: 60
         });
 
-        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); //Valid for 5 minutes
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); //Valid for 10 minutes
         let sql = queries['Record captcha'].replace(/\s+/g, ' ').trim();
         await con.promise().query(sql, [sessionId, captcha.text, expiresAt]);
 
