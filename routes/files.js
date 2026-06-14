@@ -294,7 +294,7 @@ try {
   if (captcha_rows.length === 0) 
     return res.status(400).json({ error: "Captcha expired" });
 
-  const storedCaptcha = rows[0].Captcha;
+  const storedCaptcha = captcha_rows[0].Captcha;
   let delcaptcha_sql = queries['Delete captcha'].replace(/\s+/g, ' ').trim();
   await con.promise().query(delcaptcha_sql, [sessionId]);
 
