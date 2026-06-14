@@ -199,5 +199,33 @@
         WHERE d.user_id LIKE ?
     </QuerySQL>
 
+    <QueryName>
+        Record captcha
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO LoginCaptchas (Session_Id, Captcha, Expires_At) VALUES (?, ?, ?)
+    </QuerySQL>
+
+    <QueryName>
+        Get valid captcha
+    </QueryName>
+    <QuerySQL>
+        <![CDATA[SELECT Captcha FROM LoginCaptchas WHERE Session_Id = ? AND Expires_At > NOW()]]>
+    </QuerySQL>
+
+    <QueryName>
+        Delete captcha
+    </QueryName>
+    <QuerySQL>
+        DELETE FROM LoginCaptchas WHERE Session_Id = ?
+    </QuerySQL>
+
+    <QueryName>
+        Delete expired captchas
+    </QueryName>
+    <QuerySQL>
+        <![CDATA[DELETE FROM LoginCaptchas WHERE Expires_At < NOW()]]>
+    </QuerySQL>
+
 
 </Queries>

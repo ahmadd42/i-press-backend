@@ -7,7 +7,7 @@ const fs = require('fs');
 const con = require("../MySQL/mysql-client");
 const bodyParser = require('body-parser');
 //const cor = require("cors");
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const r2 = require("../r2/client");
 //const pdf = require('pdf-poppler');
 //const os = require('os');
@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const { PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
 const { exec } = require("child_process");
+const svgCaptcha = require("svg-captcha");
 //const { generateThumbnail } = require('./thumbnail');
 
 const router = express.Router();
@@ -234,10 +235,73 @@ router.post("/hashPwd", async(req, res) => {
   }
 });
 
+async function verifyCaptcha(SessionID, CaptchaText) {
+try {
+  let sql = queries['Get valid captcha'].replace(/\s+/g, ' ').trim();
+  await con.promise().connect(); 
+  const rows = await con.promise().query(sql, [SessionID]);
+
+  if (rows.length === 0) 
+    return "Expired catcha"
+
+  const storedCaptcha = rows[0].Captcha;
+
+        if (
+            storedCaptcha.toLowerCase() !==
+            captchaInput.toLowerCase()
+        ) {
+
+            await db.query(
+                "DELETE FROM LoginCaptchas WHERE Session_Id = ?",
+                [sessionId]
+            );
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid captcha"
+            });
+
+        }
+
+        await db.query(
+            "DELETE FROM LoginCaptchas WHERE Session_Id = ?",
+            [sessionId]
+        );
+
+        // Continue username/password verification here
+
+        res.json({
+            success: true
+        });  
+
+}
+catch (err) {
+  console.error(err);
+  return err;
+}
+}
+
+
 // Login endpoint
 router.post("/login", async(req, res) => {
 try {
-  const { email, password, captchaToken } = req.body;
+  const { email, password, captchaInput, sessionId } = req.body;
+
+  let getcaptcha_sql = queries['Get valid captcha'].replace(/\s+/g, ' ').trim();
+  await con.promise().connect(); 
+  const [captcha_rows] = await con.promise().query(getcaptcha_sql, [sessionId]);
+
+  if (captcha_rows.length === 0) 
+    return res.status(400).json({ error: "Captcha expired" });
+
+  const storedCaptcha = rows[0].Captcha;
+  let delcaptcha_sql = queries['Delete captcha'].replace(/\s+/g, ' ').trim();
+  await con.promise().query(delcaptcha_sql, [sessionId]);
+
+  if (storedCaptcha.toLowerCase() !== captchaInput.toLowerCase())
+    return res.status(400).json({ error: "Invalid captcha" });
+  
+  // Continue username/password verification here
 
 /*  const captcha = await sv.verifyTurnstile(
   captchaToken,
@@ -249,7 +313,6 @@ try {
   }*/
 
   var sql = queries['Sign in'];
-  await con.promise().connect(); 
   const [rows] = await con.promise().query(sql, [email]);
 
   if (rows.length === 0)    return res.status(401).json({ error: "Invalid credentials" });
@@ -587,24 +650,47 @@ router.post("/searchkeyword", async(req, res) => {
 }  
 });
 
-router.post("/getthumbnail", async(req, res) => {
-  const id = req.body.id;
-try {
+router.get("/getCaptcha", async (req, res) => {
 
-  const videoPath = `./uploads/${id}.mp4`;
-  const thumbnailPath = await sv.generateThumbnail(
-    videoPath,
-    `./uploads/${id}.jpg`
-  );
+    try {
+        // Delete all expired captchas from database
+        let del_exp_sql = queries['Delete expired captchas'].replace(/\s+/g, ' ').trim();
+        await con.promise().connect(); 
+        await con.promise().query(del_exp_sql);
 
-  console.log('Thumbnail created:', thumbnailPath);
+        const sessionId = crypto.randomUUID();
 
-  // Upload thumbnailPath to R2
-  // Save URL in database
-res.status(200).json({ message: "Preview generated" });
-} catch (err) {
-  console.error('Thumbnail generation failed:', err);
-}
+        const captcha = svgCaptcha.create({
+            size: 5,           // number of characters
+            noise: 4,          // random lines
+            color: true,
+            ignoreChars: "0Oo1IiLl",
+            width: 180,
+            height: 60
+        });
+
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); //Valid for 5 minutes
+        let sql = queries['Record captcha'].replace(/\s+/g, ' ').trim();
+        await con.promise().query(sql, [sessionId, captcha.text, expiresAt]);
+
+        res.json({
+            success: true,
+            sessionId,
+            svg: captcha.data,
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to generate captcha"
+        });
+
+    }
+
 });
+
 
 module.exports = router;
