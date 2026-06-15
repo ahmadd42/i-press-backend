@@ -298,7 +298,7 @@ try {
   let delcaptcha_sql = queries['Delete captcha'].replace(/\s+/g, ' ').trim();
   await con.promise().query(delcaptcha_sql, [sessionId]);
 
-  if (storedCaptcha.toLowerCase() !== captchaInput.toLowerCase())
+  if (storedCaptcha !== captchaInput)
     return res.status(400).json({ error: "Invalid captcha" });
   
   // Continue username/password verification here
