@@ -227,5 +227,12 @@
         <![CDATA[DELETE FROM LoginCaptchas WHERE Expires_At < NOW()]]>
     </QuerySQL>
 
+    <QueryName>
+        Add dispute
+    </QueryName>
+    <QuerySQL>
+        INSERT INTO disputes (email, details, content_id) VALUES (?, ?, ?)
+    </QuerySQL>
+
 
 </Queries>
