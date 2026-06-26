@@ -231,7 +231,7 @@
         Add dispute
     </QueryName>
     <QuerySQL>
-        INSERT INTO disputes (email, details, content_id) VALUES (?, ?, ?)
+        INSERT INTO disputes (email, details, content_id, disp_category) VALUES (?, ?, ?)
     </QuerySQL>
 
 

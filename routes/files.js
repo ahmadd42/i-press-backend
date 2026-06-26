@@ -696,11 +696,12 @@ router.post("/adddispute", async(req, res) => {
   try {
   const usr_email = req.body.email;
   const details = req.body.details;
+  const cat = req.body.disp_type;
   const con_id = req.body.content_id;
 
   await con.promise().connect(); 
   var sql = queries['Add dispute'].replace(/\s+/g, ' ').trim();
-  await con.promise().query(sql, [usr_email, details, con_id]);
+  await con.promise().query(sql, [usr_email, details, con_id, cat]);
 
   await sv.sendConfirmation(usr_email);
 
