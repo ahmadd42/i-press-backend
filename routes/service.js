@@ -213,6 +213,27 @@ await resend.emails.send({
 });
 }
 
+async function sendConfirmation(email) {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+await resend.emails.send({
+  from: "goPress<noreply@gopress.online>",
+  to: email,
+  subject: "We have received your request",
+  html: `
+    <div style="margin-top:1em;margin-bottom:2em;">
+    <h1>goPress</h1>
+    </div>
+    <p>Dear user,</p>           
+    <p>This is to confirm that we have received the issue you reported. Our editorial team will thoroughly review it and get back to you after 2 to 4 working days. Meanwhile, you can continue exploring the platform.</p> 
+    <p style="margin-top:1em;">Thanks for your patience.</p>
+    <p style="margin-top:2em;">Regards,</p>
+    <p>goPress Team</p> 
+`
+});
+}
+
+
 async function resendEmail(email, code, operation) {
   const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
@@ -331,6 +352,7 @@ module.exports = {
   generateVerificationCode,
   hashCode,
   sendEmail,
+  sendConfirmation,
   resendEmail,
   testEmail,
   testSMTP,

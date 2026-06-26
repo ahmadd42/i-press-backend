@@ -692,5 +692,23 @@ router.get("/getCaptcha", async (req, res) => {
 
 });
 
+router.post("/adddispute", async(req, res) => {
+  try {
+  const usr_email = req.body.email;
+  const details = req.body.details;
+
+  await con.promise().connect(); 
+  var sql = queries['Add dispute'].replace(/\s+/g, ' ').trim();
+  await con.promise().query(sql, [usr_email, details]);
+
+  await sv.sendConfirmation(usr_email);
+
+  res.status(200).json({message: "Dispute added successfully"});
+
+} catch (err) {
+    res.status(500).json({ error: "Dispute addition failed", details: err.message });
+    console.log(err.message);
+  }  
+  });
 
 module.exports = router;
